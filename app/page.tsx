@@ -10,9 +10,10 @@ export const revalidate = 0; // Disable cache to always fetch latest events
 
 async function getEvents() {
   const { data, error } = await supabase
-    .from('events')
-    .select('*')
-    .order('created_at', { ascending: false });
+   .from('events')
+.select('*')
+.eq('status', 'scheduled')
+.order('scheduled_start_time', { ascending: true });
 
   console.log('Homepage events query:', { data, error });
   if (error) {
@@ -148,7 +149,7 @@ export default async function Home() {
                     <h3 className="text-xl font-bold mb-2">{event.title}</h3>
                     <p className="text-gray-400 text-sm mb-4 line-clamp-2">{event.description}</p>
                     <p className="text-[#67e3c5] font-semibold mb-4">
-                      ₦{event.price ? event.price.toLocaleString() : 'Free'}
+                      {Number(event.price_ngn) > 0 ? `₦${Number(event.price_ngn).toLocaleString('en-NG')}` : 'Free'}
                     </p>
                   </div>
                   <Link
